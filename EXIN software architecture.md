@@ -45,7 +45,7 @@ An identifier is just a name (ie. a string). The value which belongs to a variab
 A special object is *none*. *None* is used as a return value when a function (presumably because of an error) cannot return a value.
 ###### Code structure
 The code is structured along the three steps mentioned above. Parsing is supported by parse.c, scanner.c, module.c and ast.c. Semantic checking is supported in visit.c, and execution by visit.c and object.c plus the underlying objects.
-![EXIN-software-structure.png]((https://github.com/erikdelange/EXIN-AST-The-Experimental-Interpreter/blob/master/EXIN-software-structure.png)
+![EXIN-software-structure.png](https://github.com/erikdelange/EXIN-AST-The-Experimental-Interpreter/blob/master/EXIN-software-structure.png)
 ##### Notes on coding
 ###### Include files
 If a source file requires a header (*.h*) file, this has the same basename (*module.c, module.h*). Every header file has a guard (_BASENAME_) to prevent double inclusion. Every source or header file only includes the headers it needs, so no 'include all' approach.
