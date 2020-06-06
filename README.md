@@ -1,4 +1,4 @@
-# EXIN-AST - An Experimental Interpreter using an Abstract Syntax Tree
+# EXIN-AST - An Interpreter using an Abstract Syntax Tree
 
 EXIN-AST is an exercise in defining a programming language and writing an interpreter for it. Both are as simple as possible to make it easy to understand how the interpreter code is structured and to be able to add new features. It is a further development of [EXIN](https://github.com/erikdelange/EXIN-The-Experimental-Interpreter), but now with clear separation between parsing and execution by using an Abstract Syntax Tree, hence the repository's name EXIN-AST. The language resembles (as far as I know) Basic, C and Python. This is an example of EXIN-AST code:
 ```
