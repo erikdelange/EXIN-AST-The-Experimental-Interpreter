@@ -102,7 +102,7 @@ static Identifier *addIdentifier(identifiertype_t type, Scope *level, const char
 /* API: Add an identifier to the local scope.
  *
  * name		identifier name
- * return	indentifier object
+ * return	identifier object
  */
 static Identifier *add(identifiertype_t type ,const char *name)
 {
@@ -191,7 +191,7 @@ static void appendScopeLevel(void)
 }
 
 
-/* API: Remove the lowest level from the scope hierachy.
+/* API: Remove the lowest level from the scope hierarchy.
  *
  * Also releases all identifiers and their link to objects.
  */

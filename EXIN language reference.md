@@ -1,7 +1,7 @@
 # EXIN Language Reference
 
 ##### General
-EXIN is a simple language and contains elements of Basic, C and Python.
+EXIN is a simple language and contains traces of Basic, C and Python.
 ##### Keywords
 The following keywords are reserved and may not be used as variable or function name.
 ```
@@ -59,7 +59,7 @@ float x = 3.14, y = 1E10
 str s = "abcd", t = "\n", u = ""
 list l = ['a', 2.1, "xyz"], m = [], n
 ```
-The type of a variable or literal can be retreived via the builtin *type()* function.
+The type of a variable or literal can be retrieved via the builtin *type()* function.
 ``` c
 >>> type("abc")
 = str
@@ -202,7 +202,7 @@ while (m += 1) < 10
 ```
 According to the rules of precedence the parenthesized part of the conditional expression from the do .. while loop is executed before the comparison is made, so loop counter m is incremented first.
 
-An exit from a loop can be forced at any point by the *break* and *continue* statement. When using *break* the innermost loop is exited and its conditional expression is considered to be false. Via *continue* the rest of the statement block of the loop is skipped, causing the loops conditonal expression to be evaluated again.
+An exit from a loop can be forced at any point by the *break* and *continue* statement. When using *break* the innermost loop is exited and its conditional expression is considered to be false. Via *continue* the rest of the statement block of the loop is skipped, causing the loops conditional expression to be evaluated again.
 ```
 int n
 while 1
@@ -210,14 +210,14 @@ while 1
         break
     n += 1
 ```
-This loop is executed infinitly because 1 always evaluates to true. However the *if* statement with *break* makes sure the loop is terminated once n equals 10.
+This loop is executed infinitely because 1 always evaluates to true. However the *if* statement with *break* makes sure the loop is terminated once n equals 10.
 ##### Looping through lists and strings
 The *for .. in sequence* loop cycles through the content of a list of string. As with the other loops *break* and *continue* can be used here.
 ```
 for element in [1, 2.0, "abc", 'c']
     print element, type(element)
 ```
-It is not neccesary to define variable *element* upfront because it is just a reference to a variable in the list. In C this would be called a pointer. It can be used to change the value in the list. The types of the values which are assigned can be different for each element of the list. If the sequence used in the *for .. in* loop is a string then of course *element* is only assigned characters. Strings are read-only. *Element* stays in existence after the for loop is finished, and then points to the last read value. If the sequence was empty ("" or []) it points to the *none* object.
+It is not necessary to define variable *element* upfront because it is just a reference to a variable in the list. In C this would be called a pointer. It can be used to change the value in the list. The types of the values which are assigned can be different for each element of the list. If the sequence used in the *for .. in* loop is a string then of course *element* is only assigned characters. Strings are read-only. *Element* stays in existence after the for loop is finished, and then points to the last read value. If the sequence was empty ("" or []) it points to the *none* object.
 ##### Function definition
 Functions are defined using the *def* keyword followed by a function name and a pair of parenthesis containing the argument names separated by comma's. Even if a function has no arguments the parenthesis are mandatory. All arguments are passed by value. There is no type checking when the function is called. The number of arguments in the function call must match the function declaration.
 ```
@@ -255,7 +255,7 @@ Information can be send to the standard output via the *print* statement. Any nu
 >>> print s, "there", 1 + 2 - 3.14
 Hello there -0.14
 ```
-The printed arguments are separated by a space, and after the last argument a newline is printed. This behaviour can be supressed by adding *-raw* after the *print* statement (e.g *print -raw 3.14*). Note that *-raw* is not followed by a comma.
+The printed arguments are separated by a space, and after the last argument a newline is printed. This behaviour can be suppressed by adding *-raw* after the *print* statement (e.g *print -raw 3.14*). Note that *-raw* is not followed by a comma.
 
 The *input* statement reads data from the standard input into a variable. Input must be ended by a newline. Optionally a prompt string can be specified which is printed before the input is read. Note there is no comma between the prompt and variable. Multiple variables can be read using a single input statement.
 ```
@@ -266,10 +266,10 @@ input first_name, last_name
 The *pass* keyword is a no-operation statement and can be used as a placeholder during program development.
 Statements cannot be used as identifier (for a variable or function) name.
 ##### Builtin functions
-A number of builtin functions are provided. These include type(variable) to return a string with the type of the variable, chr(integer) which returs a string with the ASCII representation of integer and ord(string) which returns the ASCII value (as integer) of the character in the string. The purpose of builtin functions is to facilitate adding new functions.
+A number of builtin functions are provided. These include type(variable) to return a string with the type of the variable, chr(integer) which returns a string with the ASCII representation of integer and ord(string) which returns the ASCII value (as integer) of the character in the string. The purpose of builtin functions is to facilitate adding new functions.
 ##### Grammar in EBNF
 For a graphical representation of the syntax see [EXIN syntax diagram](EXIN%20syntax%20diagram.pdf).
-For an explantion of the EBNF notation used below see [EBNF syntax.txt](EBNF%20syntax.txt).
+For an explanation of the EBNF notation used below see [EBNF syntax.txt](EBNF%20syntax.txt).
 ```
 /*	EXIN grammar.
  *

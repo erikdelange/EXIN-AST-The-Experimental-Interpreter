@@ -243,7 +243,7 @@ static Object *list_concat(ListObject *op1, ListObject *op2)
  *
  * Either operand op1 or op2 is a list-object. The other operand is
  * guaranteed to be number-object and will be converted to an
- * integer. If this is negative it will be siltently adjusted
+ * integer. If this is negative it will be silently adjusted
  * to 0, 0 will return an empty list.
  *
  * return	new listobject or none-object in case of error

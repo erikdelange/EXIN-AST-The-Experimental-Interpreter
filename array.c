@@ -4,7 +4,7 @@
  * The array indices are zero-based.
  *
  * Beware that when using the append, insert and remove functions the location
- * of the array can change. Therefor variables may not hold a reference to an
+ * of the array can change. Therefore variables may not hold a reference to an
  * element; elements must only be referenced as 'array->element[index]'.
  *
  * 2020 K.W.E. de Lange

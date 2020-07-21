@@ -6,7 +6,7 @@
 #define _MODULE_
 
 /* This struct is the API to a module object, containing both data and
- * function adresses.
+ * function addresses.
  *
  * Function import() loads a new module. Function search() looks for a module
  * in the list of loaded modules.

@@ -32,7 +32,7 @@
  * The unary operators are:
  *
  *  -   negation of the operand
- *  +   retuns the operand (so does nothing)
+ *  +   returns the operand (so does nothing)
  *  !   logical negation of the operand (returns 0 or 1)
  *
  * Binary operators require two operands:
@@ -65,7 +65,7 @@
  * remain unchanged. Result is a newly created object. Its type is dependent
  * on operand1 and optionally operand2. The operations always return a usable
  * result, so never NULL as this can be a source of bugs. However the results
- * may not be usefull as in case of errors often a NONE_T is returned.
+ * may not be useful as in case of errors often a NONE_T is returned.
  * Exception are obj_alloc() and obj_create() which return a NULL in case the
  * memory allocation failed. It is up to the calling function to handle this.
  *
@@ -78,6 +78,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "error.h"
 #include "object.h"
@@ -208,8 +209,6 @@ void obj_print(FILE *fp, Object *obj)
 	assert(obj);
 
 	TYPEOBJ(obj)->print(fp, obj);
-
-	fflush(fp);
 }
 
 
@@ -226,7 +225,7 @@ Object *obj_scan(FILE *fp, objecttype_t type)
 
 	fgets(buffer, LINESIZE + 1, fp);
 
-	/* if fgets() encounteres an error then buffer will contain an empty string ("") */
+	/* if fgets() encounters an error then buffer will contain an empty string ("") */
 
 	buffer[strcspn(buffer, "\r\n")] = 0;  /* remove trailing newline, if any */
 
@@ -247,7 +246,6 @@ Object *obj_scan(FILE *fp, objecttype_t type)
 			raise(TypeError, "unsupported type for input: %d", type);
 			obj = obj_alloc(NONE_T);
 	}
-	fflush(fp);
 
 	return obj;
 }

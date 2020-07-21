@@ -2,7 +2,7 @@
  *
  * Functions to print, check or execute an AST.
  *
- * All are implemented using a visitor pattern.
+ * All functions are implemented using a visitor pattern.
  * See: https://en.wikipedia.org/wiki/Visitor_pattern
  *
  * During execution values (represented by objects) are exchanged between functions via
@@ -23,14 +23,14 @@
 #include "list.h"
 
 
-static int do_break = 0;	/* If true busy quiting loop because of break */
-static int do_continue = 0;	/* If true busy quiting loop because of continue */
+static int do_break = 0;	/* If true busy quitting loop because of break */
+static int do_continue = 0;	/* If true busy quitting loop because of continue */
 static int do_return = 0;	/* If true busy exiting block or module because of return */
 
 
-Node *current_node = NULL;	/* During check and visit used to keep track of the node
+Node *current_node = NULL;	/* During check() and visit() used to keep track of the node
 							 * currently executed for easy error reporting. NULL while
-							 * still parsing the source code.
+							 * parsing the source code.
 							 */
 
 

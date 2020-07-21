@@ -6,7 +6,7 @@
  * guaranteed to be a StrObject. This means functions do not need
  * to check this. If there is a return value then this is either
  * an object of some type or a none-object in case of an error.
- * Any deviation from these rules is explicitely stated at the
+ * Any deviation from these rules is explicitly stated at the
  * respective function.
  *
  * 2016 K.W.E. de Lange
@@ -120,7 +120,7 @@ static Object *str_length(StrObject *obj)
 }
 
 
-/* Create a new string which consits of the strings from op1 and op2.
+/* Create a new string which consists of the strings from op1 and op2.
  *
  * Operand op1 or op2 is a string. The other operand can be anything
  * and will be converted to a string. This conversion is guaranteed

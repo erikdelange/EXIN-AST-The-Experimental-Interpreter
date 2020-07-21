@@ -1,6 +1,6 @@
 /* array.h
  *
- * Univeral array consisting of pointers to void.
+ * Universal array consisting of pointers to void.
  *
  * 2020 K.W.E. de Lange
  */

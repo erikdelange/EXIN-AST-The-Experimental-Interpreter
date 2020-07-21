@@ -17,7 +17,7 @@
 /* For every nodetype a 'create_...' function is defined below.
  * On entry the new node has been created, its type set, it is
  * linked to the position in the source code where originated
- * from, but any other field is unintialized. This must be
+ * from, but any other field is uninitialized. This must be
  * done in the respective 'create_...' function.
  *
  * For any char* argument the 'create_...' function will make

@@ -3,7 +3,7 @@
  * Encodes source code into an abstract syntax tree.
  *
  * See https://en.wikipedia.org/wiki/Recursive_descent_parser for
- * an explanation of the basic setup of the parser.
+ * an explanation of the basic set-up of the parser.
  *
  * Contrary to normal C code the comments preceding every function
  * specify the state of the scanner at the entry and at the exit of
@@ -12,7 +12,7 @@
  * By creating the AST the parser effectively verifies whether the
  * source code complies to the language grammar.
  *
- * The syntax in comments is specified in EBNF metasyntax.
+ * The syntax in comments is specified in EBNF meta-syntax.
  *
  * 2020 K.W.E. de Lange
  */
@@ -334,7 +334,7 @@ static Node *equality_expr(void)
 }
 
 
-/* Encode expressions with perators: logical and
+/* Encode expressions with operators: logical and
  *
  * Syntax: equality_expr ( 'and' logical_and_expr )*
  *
@@ -510,9 +510,9 @@ static Node *function_declaration(void)
 }
 
 
-/* Encode declaration of variabele(s) and optionally the initial value(s).
+/* Encode declaration of variable(s) and optionally the initial value(s).
  *
- * vt: variabele(s) type - char, int, float, str, list
+ * vt: variable(s) type - char, int, float, str, list
  *
  * Syntax: type identifier ( '=' assignment_expr )? ( ',' identifier ( '=' assignment_expr )? )* NEWLINE
  *

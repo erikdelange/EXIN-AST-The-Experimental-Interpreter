@@ -447,7 +447,7 @@ static token_t read_next_token(char *buffer, int bufsize)
 			return INDENT;
 		} else {  /* col < scanner.indentation[scanner.level] */
 			if (--scanner.indentlevel < 0)
-				raise(SyntaxError, "inconsistent use of TAB and space in identation");
+				raise(SyntaxError, "inconsistent use of TAB and space in indentation");
 			if (col != scanner.indentation[scanner.indentlevel]) {
 				scanner.at_bol = true;  /* not yet at old indentation level */
 				scanner.module->pos = scanner.module->bol;

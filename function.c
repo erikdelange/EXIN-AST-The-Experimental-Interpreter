@@ -50,7 +50,7 @@ static void chr(Array *arguments, Stack *s)
 
 /* Builtin: return integer representation of ASCII character (in string)
  *
- * Syntaxt: ord(string expression)
+ * Syntax: ord(string expression)
  */
 static void ord(Array *arguments, Stack *s)
 {
@@ -80,7 +80,7 @@ static struct {
 	char *functionname;
 	size_t argc;
 	void (*functionaddr)(Array *, Stack *);
-} builtinTable[] = {  /* Note: functionnames *must* be sorted alphabetically */
+} builtinTable[] = {  /* Note: function names *must* be sorted alphabetically */
 	{"chr", 1, chr},
 	{"ord", 1, ord},
 	{"type", 1, type}

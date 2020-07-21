@@ -4,7 +4,7 @@
  * and starts execution of the code of the module specified
  * on the command line.
  *
- * 2018	K.W.E. de Lange
+ * 2018 K.W.E. de Lange
  */
 #include <ctype.h>
 #include <libgen.h>
@@ -58,6 +58,8 @@ int	main(int argc, char **argv)
 {
 	char ch;
 	char *executable = basename(*argv);
+
+	setbuf(stdout, NULL);  /* unbuffered output */
 
 	/* decode flags on the command line */
 	while (--argc > 0 && (*++argv)[0] == '-') {

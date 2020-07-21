@@ -7,7 +7,7 @@
  * This means functions do not need to check this. If there is a
  * return value then this is either an Object or none-object in
  * case of an error. Any deviation from these rules is
- * explicitely stated at the respective function.
+ * explicitly stated at the respective function.
  *
  * 2016 K.W.E. de Lange
  */

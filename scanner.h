@@ -39,7 +39,7 @@ static inline char *tokenName(token_t t)  /* 'inline' requires at least C99 */
 
 
 /* This struct is the API to the scanner object, containing both data and
- * function adresses.
+ * function addresses.
  *
  * Function next() reads the next token, and places it in variable 'token'.
  * If the token is an identifier or literal then 'string' points to the text.

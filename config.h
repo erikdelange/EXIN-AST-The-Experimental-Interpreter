@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 #define LANGUAGE	"EXIN"
-#define VERSION		"2.00"
+#define VERSION		"2.01"
 #define TABSIZE		4		/* default spaces per tab */
 
 /* Constants which are used to define the size of
