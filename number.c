@@ -237,7 +237,7 @@ static Object *number_div(Object *op1, Object *op2)
 {
 	Object *result = NULL;
 
-	if (obj_as_int(op2) == 0)
+	if (obj_as_float(op2) == 0)
 		raise(DivisionByZeroError);
 	else
 		switch (coerce(op1, op2)) {
@@ -266,7 +266,7 @@ static Object *number_mod(Object *op1, Object *op2)
 {
 	Object *result = NULL;
 
-	if (obj_as_int(op2) == 0)
+	if (obj_as_float(op2) == 0)
 		raise(DivisionByZeroError);
 	else
 		switch (coerce(op1, op2)) {
