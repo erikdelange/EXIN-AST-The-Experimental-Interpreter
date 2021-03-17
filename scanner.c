@@ -15,7 +15,7 @@
  * identifier, the number, the character or the string. In all other cases it
  * contains an empty string ("").
  *
- * 1994	K.W.E. de Lange
+ * Copyright (c) 1994 K.W.E. de Lange
  */
 #include <assert.h>
 #include <ctype.h>
@@ -120,7 +120,7 @@ static void scanner_init(struct scanner *sc, Module *m)
 	sc->indentlevel = 0,
 	sc->indentation[0] = 0,
 
-	sc->module = m;
+	sc->module = m;  /* reading from this module */
 }
 
 
@@ -428,6 +428,8 @@ static token_t read_next_token(char *buffer, int bufsize)
 		if (ch == '#')
 			while (ch != '\n' && ch != EOF)
 				ch = nextch();
+		if (ch == '\r')
+			ch = nextch();  /* handle linux style line ending */
 		if (ch == '\n') {
 			scanner.at_bol = true;
 			continue;
@@ -467,6 +469,8 @@ static token_t read_next_token(char *buffer, int bufsize)
 			ch = nextch();
 
 	/* check for end of line or end of file */
+	if (ch == '\r')
+		ch = nextch();  /* handle linux style line endings */
 	if (ch == '\n') {
 		scanner.at_bol = true;
 		return NEWLINE;

@@ -1,6 +1,6 @@
 /* parse.c
  *
- * Encodes source code into an abstract syntax tree.
+ * Encodes source code into an abstract syntax tree (AST).
  *
  * See https://en.wikipedia.org/wiki/Recursive_descent_parser for
  * an explanation of the basic set-up of the parser.
@@ -14,10 +14,11 @@
  *
  * The syntax in comments is specified in EBNF meta-syntax.
  *
- * 2020 K.W.E. de Lange
+ * Copyright (c) 2020 K.W.E. de Lange
  */
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 #include "function.h"
 #include "scanner.h"
@@ -147,7 +148,7 @@ static Node *trailer(Node *n)
  */
 static Node *primary_expr(void)
 {
-	char name[BUFSIZE];
+	char name[BUFSIZE+1];
 	Node *n = NULL;
 
 	switch (scanner.token) {
@@ -180,7 +181,7 @@ static Node *primary_expr(void)
 			}
 			break;
 		case IDENTIFIER:
-			snprintf(name, BUFSIZE, "%s", scanner.string);
+			snprintf(name, sizeof(name), "%s", scanner.string);
 			expect(IDENTIFIER);
 			if (accept(LPAR)) {
 				n = create(FUNCTION_CALL, name, is_builtin(name));
@@ -481,10 +482,10 @@ static Node *indented_block(void)
 static Node *function_declaration(void)
 {
 	Node *stmnt;
-	char name[BUFSIZE];
+	char name[BUFSIZE+1];
 	Array *arguments = array_alloc();
 
-	snprintf(name, BUFSIZE, "%s", scanner.string);
+	snprintf(name, sizeof(name), "%s", scanner.string);
 
 	expect(IDENTIFIER);
 	expect(LPAR);
@@ -521,7 +522,7 @@ static Node *function_declaration(void)
  */
 static Node *variable_declaration(variabletype_t vt)
 {
-	char name[BUFSIZE];
+	char name[BUFSIZE+1];
 	Node *n, *defvar;
 
 	n = create(VARIABLE_DECLARATION);
@@ -531,7 +532,7 @@ static Node *variable_declaration(variabletype_t vt)
 			raise(SyntaxError, "expected identifier instead of %s", \
 								tokenName(scanner.token));
 
-		snprintf(name, BUFSIZE, "%s", scanner.string);
+		snprintf(name, sizeof(name), "%s", scanner.string);
 
 		scanner.next();
 
@@ -624,11 +625,11 @@ static Node *do_stmnt(void)
  */
 static Node *for_stmnt(void)
 {
-	char targetname[BUFSIZE];
+	char targetname[BUFSIZE+1];
 	Node *stmnt;
 
 	if (scanner.token == IDENTIFIER)
-		snprintf(targetname, BUFSIZE, "%s", scanner.string);
+		snprintf(targetname, sizeof(targetname), "%s", scanner.string);
 
 	expect(IDENTIFIER);
 	expect(IN);
@@ -886,14 +887,14 @@ Node *parse(Module *m)
 	Node *n;
 	Scanner s;
 
-	scanner.save(&s);
-	scanner.init(&scanner, m);
+	scanner.save(&s);  /* save the current scanner */
+	scanner.init(&scanner, m);  /* fresh scanner, reading from m */
 
 	scanner.next();  /* first token must be read before starting the parser */
 
 	n = block();
 
-	scanner.load(&s);
+	scanner.load(&s);  /* restore the scanner */
 
 	return n;
 }

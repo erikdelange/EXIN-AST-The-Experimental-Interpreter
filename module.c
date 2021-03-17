@@ -6,11 +6,12 @@
  * from the code.
  * Module objects are stored in a singly linked list starting at 'modulehead'.
  *
- * 1995	K.W.E. de Lange
+ * Copyright (c) 1995 K.W.E. de Lange
  */
 #include <sys/stat.h>
 #include <assert.h>
 #include <stdio.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -53,9 +54,9 @@ static Module *search(const char *name)
 static int load(Module *self, const char *name)
 {
 	FILE *fp;
-	struct _stat stat_buffer;
+	struct stat stat_buffer;
 
-	if (_stat(name, &stat_buffer) == 0) {
+	if (stat(name, &stat_buffer) == 0) {
 		self->size = stat_buffer.st_size;
 		if ((self->code = calloc(self->size + 2, sizeof(char))) != NULL) {
 			if ((fp = fopen(name, "r")) != NULL) {

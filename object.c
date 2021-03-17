@@ -2,9 +2,9 @@
  *
  * Operations on objects
  *
- * Variables are represented as objects. An object contains data but also
- * a number of methods. Every object has a minimal and thus mandatory set
- * of methods. This set is: alloc(), free(), set(), vset(), print() and
+ * Values of variables are represented as objects. An object contains data
+ * but also a number of methods. Every object has a minimal and thus mandatory
+ * set of methods. This set is: alloc(), free(), set(), vset(), print() and
  * method().
  *
  * Which other methods are available depends on the type of the object.
@@ -12,15 +12,15 @@
  * called via obj_...() functions.
  *
  * Objects are created when required, but also automatically removed when
- * no longer needed. For this purpose every object instance has reference
+ * no longer needed. For this purpose every object instance has a reference
  * counter. Every time an object is allocated or assigned to an identifier
  * the reference counter is incremented. Once a routine no longer needs an
  * object it must decrement the counter. The moment the reference counter
- * hits zero the object is removed from memory. (Beware, if not programmed
+ * hits zero the object is removed from memory. (Beware that if not programmed
  * properly this can be a source of unexplainable bugs or excessive memory
  * consumption).
  *
- * All operations on and between objects are defined in object.c and are
+ * All operations on - and between objects are defined in object.c and are
  * accessed via function names like obj_...() followed by the operation,
  * e.g. obj_add().
  *
@@ -61,24 +61,25 @@
  *  Object *obj_negate(Object *op1)
  *  Object *obj_add(Object *op1, Object *op2)
  *
- * Function arguments operand1 and operand2 - although being pointers - always
- * remain unchanged. Result is a newly created object. Its type is dependent
- * on operand1 and optionally operand2. The operations always return a usable
- * result, so never NULL as this can be a source of bugs. However the results
- * may not be useful as in case of errors often a NONE_T is returned.
- * Exception are obj_alloc() and obj_create() which return a NULL in case the
- * memory allocation failed. It is up to the calling function to handle this.
+ * Function arguments operand1 and operand2 always remain unchanged. Result is
+ * a newly created object. Its type is dependent on operand1 and optionally
+ * operand2. The operations always return a usable result, so never NULL as
+ * this can be a source of bugs. However the results may not be useful as in
+ * case of errors often a NONE_T is returned. Exception are obj_alloc() and
+ * obj_create() which return a NULL in case the memory allocation failed.
+ * It is up to the calling function to handle this.
  *
  * See function coerce() in number.c for the rules for determining the type
  * of the result for arithmetic operations. For logical and comparison
  * operations the result is always an INT_T with values 0 and 1.
  *
- * 1994 K.W.E. de Lange
+ * Copyright (c) 1994 K.W.E. de Lange
  */
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <errno.h>
 
 #include "error.h"
 #include "object.h"
