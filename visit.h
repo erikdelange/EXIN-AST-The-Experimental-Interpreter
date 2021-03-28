@@ -1,6 +1,6 @@
 /* visit.h
  *
- * 2020 K.W.E. de Lange
+ * Copyright (c) 2020 K.W.E. de Lange
  */
 #ifndef _VISIT_
 #define _VISIT_

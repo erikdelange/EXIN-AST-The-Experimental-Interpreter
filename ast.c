@@ -1,8 +1,8 @@
 /* ast.c
  *
- * Routines for creating nodes in an abstract syntax tree.
+ * Routines for creating nodes in the abstract syntax tree.
  *
- * 2020 K.W.E. de Lange
+ * Copyright (c) 2020 K.W.E. de Lange
  */
 #include <stdarg.h>
 #include <stdlib.h>
@@ -16,12 +16,15 @@
 
 /* For every nodetype a 'create_...' function is defined below.
  * On entry the new node has been created, its type set, it is
- * linked to the position in the source code where originated
+ * linked to the position in the source code where it originated
  * from, but any other field is uninitialized. This must be
  * done in the respective 'create_...' function.
  *
  * For any char* argument the 'create_...' function will make
- * a private copy. Other pointers are used as is.
+ * a private copy using strdup(). Other pointers are used as is.
+ *
+ * The generic callable create() function can be found at the
+ * bottom of this source file.
  *
  */
 
@@ -187,7 +190,7 @@ static void create_function_call(Node *n, va_list argp)
 
 	n->function_call.name = strdup(va_arg(argp, char *));
 	n->function_call.arguments = array_alloc();
-	n->function_call.builtin = va_arg(argp, int);
+	n->function_call.builtin = va_arg(argp, int);  /* bool is promoted to int */
 	n->function_call.checked = false;
 }
 
@@ -217,6 +220,7 @@ static void create_function_declaration(Node *n, va_list argp)
 	n->print = print_function_declaration;
 
 	n->function_declaration.name = strdup(va_arg(argp, char *));
+	n->function_declaration.nested = va_arg(argp, int);  /* bool is promoted to int */
 	n->function_declaration.arguments = va_arg(argp, Array *);
 }
 
@@ -429,6 +433,9 @@ Node *create(nodetype_t type, ...)
 	else {
 		n->type = type;
 
+		/* record where we are in the code to be able to print error
+		 * or debug messages.
+		 */
 		n->source.module = scanner.module;
 		n->source.lineno = scanner.module->lineno;
 		n->source.bol = scanner.module->bol;

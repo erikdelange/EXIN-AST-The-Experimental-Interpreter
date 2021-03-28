@@ -1,8 +1,14 @@
 /* function.c
  *
- * Builtin (aka intrinsic) functions.
+ * Built-in (aka intrinsic) functions.
  *
- * 2019	K.W.E. de Lange
+ * These offer a simple way to add functions to the language. A built-in
+ * function receives an array with all function arguments (if any) and a
+ * stack where to place the function result. Decoding and checking the
+ * function arguments is done when the function is executed, and thus
+ * is not part of the check() routine.
+ *
+ * Copyright (c) 2019 K.W.E. de Lange
  */
 #include <assert.h>
 #include <string.h>
@@ -13,7 +19,7 @@
 #include "function.h"
 
 
-/* Builtin: determine the type of an expression
+/* Built-in: determine the type of an expression
  *
  * Syntax: type(expression)
  */
@@ -29,7 +35,7 @@ static void type(Array *arguments, Stack *s)
 }
 
 
-/* Builtin: return ASCII character (as string) representation of integer
+/* Built-in: return ASCII character (as string) representation of integer
  *
  * Syntax: chr(integer expression)
  */
@@ -48,7 +54,7 @@ static void chr(Array *arguments, Stack *s)
 }
 
 
-/* Builtin: return integer representation of ASCII character (in string)
+/* Built-in: return integer representation of ASCII character (in string)
  *
  * Syntax: ord(string expression)
  */
@@ -67,7 +73,7 @@ static void ord(Array *arguments, Stack *s)
 }
 
 
-/* Table containing all builtin function names, the expected
+/* Table containing all built-in function names, the expected
  * number of arguments (will be passed as an array of objects)
  * and the function addresses.
  *
@@ -87,9 +93,9 @@ static struct {
 };
 
 
-/* Search for a builtin function.
+/* Search for a built-in function.
  *
- * functionname	name of builtin function to search
+ * functionname	name of built-in function to search
  * return		-1 if not found else index in table builtinTable
  */
 static int search_builtin(const char *functionname)
@@ -118,9 +124,9 @@ static int search_builtin(const char *functionname)
 }
 
 
-/* Execute a builtin function.
+/* Execute a built-in function.
  *
- * functionname	name of builtin function
+ * functionname	name of built-in function
  * arguments	array with function arguments (Object *)
  * s			stack where to place results
  */
@@ -136,10 +142,10 @@ void visit_builtin(const char *functionname, Array *arguments, Stack *s)
 }
 
 
-/* Check if a function is a builtin.
+/* Check if a function is a built-in.
  *
- * functionname	name of builtin function
- * return		true if functionname was a builtin function else false
+ * functionname	name of built-in function
+ * return		true if functionname was a built-in function else false
  */
 bool is_builtin(const char *functionname)
 {
@@ -149,10 +155,10 @@ bool is_builtin(const char *functionname)
 }
 
 
-/* Return the number of arguments a builtin function expects.
+/* Return the number of arguments a built-in function expects.
  *
- * functionname	name of builtin function
- * return		true if functionname was a builtin function else false
+ * functionname	name of built-in function
+ * return		true if functionname was a built-in function else false
  */
 size_t builtin_argc(const char *functionname)
 {

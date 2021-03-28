@@ -2,7 +2,7 @@
  *
  * Configuration constants.
  *
- * 2018	K.W.E. de Lange
+ * Copyright (c) 2018 K.W.E. de Lange
  */
 #ifndef _CONFIG_
 #define _CONFIG_
@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 #define LANGUAGE	"EXIN"
-#define VERSION		"2.01"
+#define VERSION		"2.03"
 #define TABSIZE		4		/* default spaces per tab */
 
 /* Constants which are used to define the size of
@@ -26,8 +26,8 @@ typedef char char_t;		/* basic type for CHAR_T */
 typedef long int_t;			/* basic type for INT_T */
 typedef double float_t;		/* basic type for FLOAT_T */
 
-/* Container for all global configuration variables
- * which can be changed during run time.
+/* Container which holds all global configuration variables
+ * whose value can be changed during run time.
  */
 typedef struct {
 	int debug;      /* debug logging level */
@@ -58,12 +58,14 @@ extern Config config;
  */
 #define NODEBUG         0	/* no debug output */
 #define DEBUGTOKEN      1	/* show tokens during parsing */
-#define DEBUGALLOC	    2   /* show object alloc() & free() * (un)bind() */
-#define DEBUGASTSTOP    4	/* print ast and stop */
-#define DEBUGASTEXEC    8	/* print ast and execute */
+#define DEBUGALLOC      2   /* show object alloc(), free() and (un)bind() */
+#define DEBUGASTSTOP    4	/* print AST and stop */
+#define DEBUGASTEXEC    8	/* print AST and execute */
 #define DEBUGDUMP       16	/* dump identifiers and objects to stdout */
 #define DEBUGDUMPFILE   32	/* dump identifiers and objects to file */
 
+/* This macro is used to suppress 'unused argument' warnings during compilation.
+ */
 #ifndef UNUSED
 #define UNUSED(x) (void)(x)
 #endif

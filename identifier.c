@@ -3,14 +3,16 @@
  * Identifier management.
  *
  * Identifiers are names which refer to variables or functions. An identifier
- * has a certain scope. At any moment only two scope levels are relevant; the
- * global scope at program level, and the local scope within the currently
- * executed function. When entering a function a new (lowest) scope level
- * must be created.
+ * has a certain scope. At any moment at least two scope levels are relevant;
+ * the global scope at program level, and the local scope within the currently
+ * executed function. In case of nested functions the scope levels of all
+ * enclosing functions are added to the local scope.
+ *
+ * When entering a function a new (lowest) scope level must be created.
  *
  * For example identifier 'alpha' may occur in all levels in the scope
  * hierarchy. However the name is only searched at local, and if not
- * found there, at global level.
+ * found there at any enclosing scope level and finally at global level.
  *
  * Identifiers are stored in a singly linked list. 'Next' points to the next
  * identifier. Every list starts at a header (of type 'Scope'). These headers
@@ -20,7 +22,7 @@
  * 'local' provide quick access to respectively the highest and lowest
  * levels in the scope hierarchy.
  *
- *	1994 K.W.E. de Lange
+ *	Copyright (c) 1994 K.W.E. de Lange
  */
 #include <stdlib.h>
 #include <string.h>
@@ -53,17 +55,27 @@ static Identifier *searchIdentifierInScope(const Scope *level, const char *name)
 }
 
 
-/* API: Search an identifier, first at local then at global scope level.
+/* API: Search an identifier, first at local then at any enclosing level and
+ *      if nothing is found finally at the global scope level.
  *
  * name		identifier name
  * return	Identifier* object or NULL if not found
  */
 static Identifier *search(const char *name)
 {
+	Scope *level = local;
 	Identifier *id;
 
-	if ((id = searchIdentifierInScope(local, name)) == NULL)
-		id = searchIdentifierInScope(global, name);
+	while (true) {
+		if ((id = searchIdentifierInScope(level, name)) == NULL) {
+			if (level->nested == true && level->parent) {
+				level = level->parent;
+				continue;
+			} else
+				id = searchIdentifierInScope(global, name);
+		}
+		break;
+	}
 
 	return id;
 }
@@ -174,8 +186,10 @@ static void removeIdentifier(Identifier *id)
 
 
 /* API: Append a new lowest level to the scope hierarchy.
+ *
+ * nested	this scope level is nested in the next higher level
  */
-static void appendScopeLevel(void)
+static void appendScopeLevel(bool nested)
 {
 	Scope *level;
 
@@ -186,6 +200,7 @@ static void appendScopeLevel(void)
 
 	level->parent = local;
 	level->first = NULL;
+	level->nested = nested;
 
 	local = level;
 }

@@ -1,13 +1,14 @@
 /* array.c
  *
  * Functions to create an empty array and to append, insert and remove elements.
- * The array indices are zero-based.
+ * The array indices are zero-based. The array size expands and shrinks
+ * automatically when adding or removing items.
  *
  * Beware that when using the append, insert and remove functions the location
  * of the array can change. Therefore variables may not hold a reference to an
- * element; elements must only be referenced as 'array->element[index]'.
+ * element; elements may only be referenced as 'array->element[index]'.
  *
- * 2020 K.W.E. de Lange
+ * Copyright (c) 2020 K.W.E. de Lange
  */
 #include <assert.h>
 #include <stdbool.h>

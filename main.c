@@ -4,7 +4,7 @@
  * and starts execution of the code of the module specified
  * on the command line.
  *
- * 2018 K.W.E. de Lange
+ * Copyright (c) 2018 K.W.E. de Lange
  */
 #include <ctype.h>
 #include <libgen.h>
@@ -105,7 +105,7 @@ int	main(int argc, char **argv)
 		Stack *s = stack_alloc(10);
 		int r = 0;
 
-		Node *root = parse(module.import(*argv));
+		Node *root = parse(module.import(*argv));  /* step 1: parse module(s) */
 
 		if (config.debug & (DEBUGASTEXEC | DEBUGASTSTOP))
 			print(root, 0);
@@ -114,12 +114,12 @@ int	main(int argc, char **argv)
 		tmp.debug = config.debug;
 		config.debug = 0;  /* no debug output when checking */
 
-		check(root);
+		check(root);  /* step 2: do code checks */
 		scope.remove_level();
 
 		config.debug = tmp.debug;
 
-		visit(root, s);
+		visit(root, s);  /* step 3: visit = execute the AST */
 
 		if (!is_empty(s)) {  /* check for return value */
 			Object *obj = pop(s);

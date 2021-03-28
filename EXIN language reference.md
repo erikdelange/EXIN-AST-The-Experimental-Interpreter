@@ -242,7 +242,58 @@ int n = 10
 print "Fibonacci sequence for", n, "elements: ", fibonacci(n)
 ```
 A function returns when it reaches the end of its statement block or when a *return* statement is encountered. When using the *return* statement a return value can be explicitly specified. Without this statement, or when using just *return* the return value is considered to be integer 0. The return value of a function can be used immediately, so a function can appear everywhere where a variable can appear. Any data type can be returned by a function, including lists and strings.
-Variables are defined within the scope of a function. Any variable defined outside of a function is considered global. Function definitions can be nested, where the nested function is only visible to its parent function.
+Variables are defined within the scope of a function. Any variable defined outside of a function is considered global. Function definitions can be nested, where the nested function is only visible for its enclosing parent function. A nested function has access to the variables of all enclosing functions. See the example below.
+```
+# Nested function example. Sorts a list containing integers.
+#
+# Taken from https://en.wikipedia.org/wiki/Nested_function
+
+def sort(items)
+    def quicksort(first, last)
+        def swap(p, q)
+            int tmp = items[p]
+            items[p] = items[q]
+            items[q] = tmp
+
+        def partition()
+            int pivot = items[first]
+            int index = first
+
+            swap(index, last)
+
+            int i = first
+            while i < last
+                if items[i] < pivot
+                    swap(index, i)
+                    index += 1
+                i += 1
+
+            swap(index, last)
+
+            return index
+
+        if first < last
+            int pivotindex = partition()
+            quicksort(first, pivotindex - 1)
+            quicksort(pivotindex + 1, last)
+
+    quicksort(0, items.len() - 1)
+    return items
+
+
+list l = [3, 1, 0, 2]
+
+print "unsorted list", l
+
+l = sort(l)
+
+print "sorted list", l
+```
+This will print:
+```
+unsorted list [3,1,0,2]
+sorted list [0,1,2,3]
+```
 ##### Importing modules
 The *import* statement loads program code from other files. The imported code is executed immediately after loading. Its functions are added to the local list and any statement or declaration outside a function definition is executed. A module can only be imported once, repeated imports will raise an error. Imports can be nested.
 ```
@@ -266,7 +317,7 @@ input first_name, last_name
 The *pass* keyword is a no-operation statement and can be used as a placeholder during program development.
 Statements cannot be used as identifier (for a variable or function) name.
 ##### Builtin functions
-A number of builtin functions are provided. These include type(variable) to return a string with the type of the variable, chr(integer) which returns a string with the ASCII representation of integer and ord(string) which returns the ASCII value (as integer) of the character in the string. The purpose of builtin functions is to facilitate adding new functions.
+A number of builtin functions are provided. These include type(variable) to return a string with the type of the variable, chr(integer) which returns a string with the ASCII representation of integer and ord(string) which returns the ASCII value (as integer) of the character in the string. The purpose of builtin functions is to facilitate adding new functions to the language.
 ##### Grammar in EBNF
 For a graphical representation of the syntax see [EXIN syntax diagram](EXIN%20syntax%20diagram.pdf).
 For an explanation of the EBNF notation used below see [EBNF syntax.txt](EBNF%20syntax.txt).

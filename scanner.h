@@ -1,6 +1,6 @@
 /* scanner.h
  *
- * 2018	K.W.E. de Lange
+ * Copyright (c) 2018 K.W.E. de Lange
  */
 #ifndef _SCANNER_
 #define _SCANNER_
@@ -48,7 +48,7 @@ static inline char *tokenName(token_t t)  /* 'inline' requires at least C99 */
  * internal use only.
  */
 typedef struct scanner {
-	Module *module;		/* module from which the scanner is reading */
+	Module *module;		/* module from which this scanner is reading */
 
 	token_t token;
 	token_t peeked;		/* private */

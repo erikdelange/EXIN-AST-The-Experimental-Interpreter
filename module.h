@@ -1,6 +1,6 @@
 /* module.h
  *
- * 2018	K.W.E. de Lange
+ * Copyright (c) 2018 K.W.E. de Lange
  */
 #ifndef _MODULE_
 #define _MODULE_
@@ -20,11 +20,11 @@ typedef struct module {
 	size_t bol;				/* index in code of beginning of current line */
 	size_t lineno;			/* number of current line */
 
-	int (*nextch)(struct module *);				/* read the next character */
-	int (*peekch)(struct module *);				/* peek the next character */
-	int (*pushch)(struct module *, char);		/* push character back in the input stream */
-	void (*tobol)(struct module *);				/* move to beginning of current line */
-	void (*reset)(struct module *);				/* reset reader to line 1, character 1 */
+	int (*nextch)(struct module *);			/* read the next character */
+	int (*peekch)(struct module *);			/* peek the next character */
+	int (*pushch)(struct module *, char);	/* push character back in the input stream */
+	void (*tobol)(struct module *);			/* move to beginning of current line */
+	void (*reset)(struct module *);			/* reset reader to line 1, character 1 */
 
 	struct module *(*import)(const char *name);	/* import a new module */
 	struct module *(*search)(const char *name);	/* search for loaded module */

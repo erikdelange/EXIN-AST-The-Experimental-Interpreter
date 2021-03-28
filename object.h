@@ -1,6 +1,23 @@
 /* object.h
  *
- * 1994 K.W.E. de Lange
+ * Definitions for the object data structure which can hold a value, and
+ * the object-type data structure which contains pointers to the methods
+ * (=functions) which can be used to manipulate an object. Separate data
+ * structures for Object and TypeObject are used to avoid having to store
+ * the same methods with every object. This saves memory.
+ *
+ * The generic Object struct only contains the header fields which every
+ * object has. It does not contain a value, and is only used defining
+ * pointers to an object. In most situation the 'Object *' must be cast
+ * to the actual object type required.
+ * See the actual object definitions in number.c, str.c and list.c to
+ * find out how data is stored in the field(s) directly after OBJ_HEAD.
+ *
+ * The generic TypeObject struct also only contains the methods which are
+ * applicable to every object. Just as with the Object additional methods
+ * are defined in the specific type objects in number.c, str.c and list.c.
+ *
+ * Copyright (c) 1994 K.W.E. de Lange
  */
 #ifndef _OBJECT_
 #define _OBJECT_
@@ -14,8 +31,8 @@ typedef enum { CHAR_T = 1, INT_T, FLOAT_T, STR_T, LIST_T, LISTNODE_T, NONE_T } o
 
 #ifdef DEBUG
 	/* The debug version of Object contains nextobj / prevobj pointers
-	 * so it can be put in a double linked list. When using a source
-	 * code debugger this makes is easier to find objects. */
+	 * so it can be put in a doubly linked list. When using a source
+	 * code debugger like GDB this makes it easier to find objects. */
 	#define OBJ_HEAD	int refcount;  \
 						objecttype_t type;  \
 						struct typeobject *typeobj;  \
@@ -49,10 +66,10 @@ typedef struct typeobject {
 #define TYPEOBJ(obj)	(((Object *)(obj))->typeobj)
 #define TYPENAME(obj)	(((Object *)(obj))->typeobj->name)
 
-#define isNumber(obj)	(TYPE(obj) == CHAR_T || TYPE(obj) == INT_T || TYPE(obj) == FLOAT_T)  /* UNSAFE */
+#define isNumber(obj)	(TYPE(obj) == CHAR_T || TYPE(obj) == INT_T || TYPE(obj) == FLOAT_T)  /* UNSAFE, evaluates obj more then once */
 #define isString(obj)	(TYPE(obj) == STR_T)
 #define isList(obj)		(TYPE(obj) == LIST_T)
-#define isSequence(obj)	(TYPE(obj) == LIST_T || TYPE(obj) == STR_T)  /* UNSAFE */
+#define isSequence(obj)	(TYPE(obj) == LIST_T || TYPE(obj) == STR_T)  /* UNSAFE, evaluates obj more then once  */
 #define isListNode(obj)	(TYPE(obj) == LISTNODE_T)
 
 
@@ -108,7 +125,7 @@ extern Object *obj_slice(Object *sequence, int_t start, int_t end);
 
 extern Object *obj_type(Object *op1);
 
-/* Functions for type and object conversions.
+/* Functions for type - and object conversions.
  */
 extern char_t obj_as_char(Object *op1);
 extern int_t obj_as_int(Object *op1);

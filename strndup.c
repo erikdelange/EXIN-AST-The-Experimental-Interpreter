@@ -3,7 +3,7 @@
  * Not every C compiler has this function in its standard library so here
  * is a private version.
  *
- * 1994	K.W.E. de Lange
+ * Copyright (c) 1994 K.W.E. de Lange
  */
 #include <stdlib.h>
 #include <string.h>

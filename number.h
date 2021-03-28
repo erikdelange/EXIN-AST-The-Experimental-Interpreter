@@ -1,6 +1,6 @@
 /* number.h
  *
- * 2016 K.W.E. de Lange
+ * Copyright (c) 2016 K.W.E. de Lange
  */
 #ifndef _NUMBER_
 #define _NUMBER_

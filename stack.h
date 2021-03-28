@@ -1,8 +1,8 @@
 /* stack.h
  *
- * Stack holding pointers to void.
+ * Data structures and definitions for a stack holding pointers to void.
  *
- * 2020 K.W.E. de Lange
+ * Copyright (c) 2020 K.W.E. de Lange
  */
 #ifndef _STACK_
 #define _STACK_
@@ -10,7 +10,7 @@
 #include <stdbool.h>
 
 #define STACKINCREMENT 10	/* number of elements to add when the stack needs to grow */
-#define STACKDECREMENT 100	/* when stack has this many unused space it will shrink */
+#define STACKDECREMENT 100	/* when stack has this many unused elements it will shrink */
 
 #if (STACKDECREMENT / STACKINCREMENT) < 10
 #error "STACKDECREMENT must be at least 10 times as big as STACKINCREMENT"

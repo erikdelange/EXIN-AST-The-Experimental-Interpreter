@@ -9,7 +9,7 @@
  * a stack. In this way function prototypes for the visitor functions are uniform and
  * not dependent on the number of arguments.
  *
- * 2020 K.W.E. de Lange
+ * Copyright (c) 2020 K.W.E. de Lange
  */
 #include <stdlib.h>
 #include <string.h>
@@ -42,7 +42,7 @@ static void printf_indent(const int level, const char *format, ...)
 	va_list argp;
 
 	for (int i = 0; i < level; i++)
-		printf("| ");
+		printf("| ");  /* this causes the indent size to be 2 characters */
 
     va_start(argp, format);
 	vprintf(format, argp);
@@ -119,12 +119,13 @@ void visit(Node *n, Stack *s)
 }
 
 
-/* For every nodetype a print, check and visit function are defined below.
- * These functions have global scope, whereas static might be expected.
- * This is done because to be able to use a visitor pattern efficiently
- * every node struct contains pointers to the functions to print, check
- * and visit that node. These pointers are assigned their values in
- * another source file, hence the global definitions here.
+/* For every nodetype a print_...(), check_...() and visit_...() function
+ * is defined below. These functions have global scope, whereas static
+ * might be expected. This is done because to be able to use a visitor
+ * pattern efficiently every node struct contains pointers to the
+ * functions to print, check and visit that node. These pointers are
+ * assigned their values in another source file (ast.c), hence the
+ * global definitions here.
  */
 
 
@@ -612,7 +613,7 @@ void check_function_call(Node *n)
 				raise(SyntaxError, "%d argument(s) expected, %d found", \
 								   id->node->function_declaration.arguments->size, n->function_call.arguments->size);
 
-			scope.append_level();
+			scope.append_level(id->node->function_declaration.nested);
 
 			/* create the identifier for the formal function arguments */
 			for (size_t i = 0; i != id->node->function_declaration.arguments->size; i++)
@@ -648,7 +649,7 @@ void visit_function_call(Node *n, Stack *s)
 		id = identifier.search(n->function_call.name);
 		fdecl = id->node;
 
-		scope.append_level();
+		scope.append_level(id->node->function_declaration.nested);
 
 		for (size_t i = 0; i != args->size; i++) {
 			id = identifier.add(VARIABLE, fdecl->function_declaration.arguments->element[i]);
@@ -696,6 +697,7 @@ void visit_expression_stmnt(Node *n, Stack *s)
 void print_function_declaration(Node *n, int level)
 {
 	printf_indent(level + 1, "NAME %s\n", n->function_declaration.name);
+	printf_indent(level + 1, "NESTED = %s\n", n->function_declaration.nested == true ? "TRUE" : "FALSE");
 	printf_indent(level + 1, "ARGUMENTS ");
 
 	for (size_t i = 0; i != n->function_declaration.arguments->size; i++)
@@ -722,7 +724,7 @@ void check_function_declaration(Node *n)
 
 	identifier.bind(id, n);
 
-	scope.append_level();
+	scope.append_level(n->function_declaration.nested);
 
 	for (size_t i = 0; i != n->function_declaration.arguments->size; i++)
 		identifier.add(VARIABLE, (char *)n->function_declaration.arguments->element[i]);

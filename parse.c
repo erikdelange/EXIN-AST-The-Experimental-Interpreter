@@ -27,6 +27,11 @@
 #include "parse.h"
 
 
+static bool in_function_declaration = false; /* Is parser now encoding a function
+											  * declaration? Required to identify
+											  * nested functions.
+											  */
+
 /* Minimal forward declarations.
  */
 static Node *logical_or_expr(void);
@@ -481,6 +486,7 @@ static Node *indented_block(void)
  */
 static Node *function_declaration(void)
 {
+	bool temp;
 	Node *stmnt;
 	char name[BUFSIZE+1];
 	Array *arguments = array_alloc();
@@ -503,9 +509,13 @@ static Node *function_declaration(void)
 		}
 	}
 
-	stmnt = create(FUNCTION_DECLARATION, name, arguments);
+	stmnt = create(FUNCTION_DECLARATION, name, in_function_declaration, arguments);
+
+	temp = in_function_declaration, in_function_declaration = true;
 
 	stmnt->function_declaration.block = indented_block();
+
+	in_function_declaration = temp;
 
 	return stmnt;
 }

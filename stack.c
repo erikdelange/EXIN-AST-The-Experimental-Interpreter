@@ -2,7 +2,12 @@
  *
  * Functions for creating and using a stack which holds void pointers.
  *
- * 2020 K.W.E. de Lange
+ * Pointers are added on top of the stack by using push(), and removed
+ * from the stack via pop(). The stack gets an initial size when created
+ * but automatically expands or shrinks dependent on the number of
+ * elements it contains.
+ *
+ * Copyright (c) 2020 K.W.E. de Lange
  */
 #include <assert.h>
 #include <stdlib.h>
@@ -10,7 +15,7 @@
 #include "stack.h"
 
 
-/* Check is stack is full.
+/* Check if stack is full.
  *
  * A full stack has top equal to the capacity - 1 because
  * top is zero-based.
@@ -71,6 +76,7 @@ void *pop(Stack *stack)
 	p = stack->array[stack->top--];
 
 	if (stack->top + 1 - stack->capacity >= STACKDECREMENT)
+		/* reclaim unused stack space */
 		if ((mem = realloc(stack->array, stack->top + 1)) != NULL)
 			stack->array = mem;
 
@@ -104,10 +110,12 @@ Stack *stack_alloc(long capacity)
 {
 	Stack *stack;
 
+	/* allocate the stack data struct */
 	if ((stack = (Stack *)malloc(sizeof(Stack))) != NULL) {
 		stack->capacity = capacity < 0 ? 0 : capacity;  /* minimum stack size is 0 */
 		stack->top = -1;  /* -1 indicates an empty stack */
 
+		/* allocate the array which will contain the pointers */
 		if ((stack->array = calloc(stack->capacity, sizeof(void *))) == NULL) {
 			free(stack);
 			stack = NULL;

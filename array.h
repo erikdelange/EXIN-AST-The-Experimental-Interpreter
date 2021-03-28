@@ -1,8 +1,8 @@
 /* array.h
  *
- * Universal array consisting of pointers to void.
+ * Data structures and definitions for a universal array holding pointers to void.
  *
- * 2020 K.W.E. de Lange
+ * Copyright (c) 2020 K.W.E. de Lange
  */
 #ifndef _ARRAY_
 #define _ARRAY_

@@ -7,8 +7,13 @@
 
 #include "object.h"
 
+
+/* All possible identifier types.
+ */
 typedef enum { VARIABLE=1, FUNCTION } identifiertype_t;
 
+/* Printable name for every identifier type.
+ */
 static inline char *identifiertypeName(identifiertype_t t)
 {
 	static char *string[] = {
@@ -20,6 +25,7 @@ static inline char *identifiertypeName(identifiertype_t t)
 
 	return string[t];
 }
+
 
 typedef struct identifier {
 	identifiertype_t type;
@@ -40,15 +46,17 @@ extern Identifier identifier;
 typedef struct scope {
 	struct scope *parent;
 	Identifier *first;
+	bool nested;
 
-	void (*append_level)(void);
+	void (*append_level)(bool nested);
 	void (*remove_level)(void);
 } Scope;
 
 extern Scope scope;
 
 #define SCOPE_INIT { .parent = NULL, \
-                     .first = NULL }
+                     .first = NULL, \
+					 .nested = false }
 
 
 #ifdef DEBUG

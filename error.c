@@ -2,7 +2,7 @@
  *
  * Error handling.
  *
- * 1995	K.W.E. de Lange
+ * Copyright (c) 1995 K.W.E. de Lange
  */
 #include <ctype.h>
 #include <stdarg.h>
@@ -62,7 +62,7 @@ static int error_index(const int number)
  * ...		optional printf style format string, optionally followed by arguments
  * return	nothing, exits the program
  *
- * raise(TypeError, "%s is not subscriptable", TYPENAME(sequence));
+ * Example: raise(TypeError, "%s is not subscriptable", TYPENAME(sequence));
  */
 void raise(const int number, ...)
 {

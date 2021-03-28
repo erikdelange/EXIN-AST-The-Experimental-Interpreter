@@ -2,14 +2,19 @@
  *
  * Number object (CHAR_T, INT_T, FLOAT_T) operations
  *
- * Principle is that on function entry any Object argument is
- * guaranteed to be either CharObject, IntObject or FloatObject.
- * This means functions do not need to check this. If there is a
- * return value then this is either an Object or none-object in
- * case of an error. Any deviation from these rules is
- * explicitly stated at the respective function.
+ * Principles:
  *
- * 2016 K.W.E. de Lange
+ * 1. on function entry any Object argument is guaranteed to be either
+ *    CharObject, IntObject or FloatObject. This means functions do not need
+ *    to check this themselves.
+ *
+ * 2. If there is a return value then this is either an Object or a none-object
+ *    in case of an error.
+ *
+ * Any deviation from these rules is explicitly stated at the respective
+ * function.
+ *
+ * Copyright (c) 2016 K.W.E. de Lange
  */
 #include <assert.h>
 #include <stdlib.h>
@@ -129,7 +134,7 @@ static void number_vset(Object *obj, va_list argp)
 
 static Object *number_method(Object *obj, char *name, Array *arguments)
 {
-	UNUSED(arguments);  /* suppress unused argument warning during compilation */
+	UNUSED(arguments);  /* suppress 'unused argument' warning during compilation */
 
 	raise(SyntaxError, "objecttype %s has no method %s", TYPENAME(obj), name);
 
@@ -313,7 +318,7 @@ static Object *number_inv(Object *op1)
 	if (op2) {
 		result = obj_sub(op2, op1);
 		obj_decref(op2);
-	} else
+	} else  /* op2 == NULL */
 		result = obj_alloc(NONE_T);
 
 	return result;
@@ -467,7 +472,9 @@ static Object *number_negate(Object *op1)
 }
 
 
-/* Number object API (separate for char_t, int_t, float_t and the generic number).
+/* Number object API (separate for char_t, int_t, float_t and the
+ * generic number type).
+ *
  */
 CharType chartype = {
 	.name = "char",
