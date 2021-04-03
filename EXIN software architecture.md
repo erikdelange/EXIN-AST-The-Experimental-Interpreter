@@ -119,7 +119,7 @@ If an error occurs within a function it will still return a usable value. So no 
 Aside from Stack Overflow I found http://c-faq.com/index.html very helpful.
 
 ##### Versions
-The interpreter requires C11. For development I used MinGW-w64's GCC C compiler (at time of writing version 10.2.0) and the CodeLite IDE. When compiling I set -Wall, -Wextra and -fanalyzer to report as many errors or questionable constructs as possible.
+The interpreter requires C11. For development I used MinGW-w64's GCC C compiler (at time of writing version 10.2.0) and the CodeLite IDE on Windows 10. The code also compiles on Ubuntu on WLS2. When compiling I set -Wall, -Wextra and -fanalyzer to report as many errors or questionable constructs as possible.
 
 ##### Debug messages
 The interpreter can produce all kinds of debugging output. For this add DEBUG to the preprocessor macros when compiling. Search for `debug_printf()` in the code to see where the messages are generated. For example, when running the following program with -d24 as debug level ...
