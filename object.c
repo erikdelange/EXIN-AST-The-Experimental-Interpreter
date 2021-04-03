@@ -224,9 +224,12 @@ Object *obj_scan(FILE *fp, objecttype_t type)
 	char buffer[LINESIZE + 1] = "";
 	Object *obj;
 
-	fgets(buffer, LINESIZE + 1, fp);
-
-	/* if fgets() encounters an error then buffer will contain an empty string ("") */
+	if (fgets(buffer, LINESIZE + 1, fp) == NULL) {
+		buffer[0] = (char)0;
+	}
+	/* if fgets() encounters an error it will return NULL
+	 * then buffer will contain an empty string ("")
+	 */
 
 	buffer[strcspn(buffer, "\r\n")] = 0;  /* remove trailing newline, if any */
 
@@ -995,13 +998,13 @@ Object *obj_to_strobj(Object *obj)
 			obj_incref(obj);
 			return obj;
 		case CHAR_T:
-			snprintf(buffer, BUFSIZE, "%c", obj_as_char(obj));
+			snprintf(buffer, sizeof(buffer), "%c", obj_as_char(obj));
 			return obj_create(STR_T, buffer);
 		case INT_T:
-			snprintf(buffer, BUFSIZE, "%ld", obj_as_int(obj));
+			snprintf(buffer, sizeof(buffer), "%ld", obj_as_int(obj));
 			return obj_create(STR_T, buffer);
 		case FLOAT_T:
-			snprintf(buffer, BUFSIZE, "%.16lG", obj_as_float(obj));
+			snprintf(buffer, sizeof(buffer), "%.16lG", obj_as_float(obj));
 			return obj_create(STR_T, buffer);
 		case NONE_T:
 			return obj_create(STR_T, "None");
