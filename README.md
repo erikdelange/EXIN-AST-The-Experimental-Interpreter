@@ -36,3 +36,4 @@ The interpreter is written in C (version C11). The details of the language and t
 - [EXIN language reference](EXIN%20language%20reference.md)
 - [EXIN software architecture](EXIN%20software%20architecture.md)
 - [EXIN syntax diagram](EXIN%20syntax%20diagram.pdf)
+- [Testing EXIN](https://github.com/erikdelange/EXIN-Test-Suite-Management)
