@@ -53,7 +53,7 @@ typedef struct scanner {
 	token_t token;
 	token_t peeked;		/* private */
 	bool at_bol;
-	char string[BUFSIZE + 1];
+	char string[BUFSIZE];
 
 	int indentlevel;
 	int indentation[MAXINDENT];

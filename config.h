@@ -10,15 +10,20 @@
 #include <stdio.h>
 
 #define LANGUAGE	"EXIN"
-#define VERSION		"2.03"
+#define VERSION		"2.04"
 #define TABSIZE		4		/* default spaces per tab */
 
 /* Constants which are used to define the size of
  * arrays which are created at compile time
  */
-#define BUFSIZE		256		/* maximum length of identifier name excl '\0' */
-#define LINESIZE	256		/* maximum length of input line excl '\0' */
+#define BUFSIZE		128		/* maximum length of identifier name incl '\0' */
+#define LINESIZE	128		/* maximum length of input line incl '\0' */
+#define MAXNUMBER	64		/* maximum length of number printed as string incl '\0' */
 #define MAXINDENT	132		/* maximum number of indents */
+
+#if BUFSIZE < 9
+#error "BUFSIZE must be 1 bigger than the longest keyword (= continue)"
+#endif
 
 /* C representation of EXIN's basic variable types
  */

@@ -41,11 +41,11 @@ static void type(Array *arguments, Stack *s)
  */
 static void chr(Array *arguments, Stack *s)
 {
-	char buffer[BUFSIZE+1];
+	char buffer[MAXNUMBER];
 
 	Object *obj = arguments->element[0];
 
-	snprintf(buffer, BUFSIZE, "%c", obj_as_char(obj));
+	snprintf(buffer, sizeof(buffer), "%c", obj_as_char(obj));
 	Object *result = obj_create(STR_T, buffer);
 
 	obj_decref(obj);

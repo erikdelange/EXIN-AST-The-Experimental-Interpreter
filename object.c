@@ -221,10 +221,10 @@ void obj_print(FILE *fp, Object *obj)
  */
 Object *obj_scan(FILE *fp, objecttype_t type)
 {
-	char buffer[LINESIZE + 1] = "";
+	char buffer[LINESIZE] = "";
 	Object *obj;
 
-	if (fgets(buffer, LINESIZE + 1, fp) == NULL) {
+	if (fgets(buffer, sizeof(buffer), fp) == NULL) {
 		buffer[0] = (char)0;
 	}
 	/* if fgets() encounters an error it will return NULL
@@ -991,7 +991,7 @@ float_t str_to_float(const char *s)
  */
 Object *obj_to_strobj(Object *obj)
 {
-	char buffer[BUFSIZE + 1];
+	char buffer[MAXNUMBER];
 
 	switch(TYPE(obj)) {
 		case STR_T:

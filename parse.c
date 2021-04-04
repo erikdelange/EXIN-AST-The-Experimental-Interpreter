@@ -79,7 +79,7 @@ static int expect(token_t t)
  */
 static Node *trailer(Node *n)
 {
-	char buffer[BUFSIZE];
+	char buffer[MAXNUMBER];
 	Node *sequence = NULL;
 
 	if (accept(LSQB)) {  /* there is a subscript */
@@ -100,7 +100,7 @@ static Node *trailer(Node *n)
 
 			if (accept(RSQB)) {
 				if (type == IS_SLICE) {
-					snprintf(buffer, BUFSIZE, "%ld", (long)INT_MAX);
+					snprintf(buffer, sizeof(buffer), "%ld", (long)INT_MAX);
 					end = create(LITERAL, VT_INT, buffer);
 				}
 			} else {
@@ -153,7 +153,7 @@ static Node *trailer(Node *n)
  */
 static Node *primary_expr(void)
 {
-	char name[BUFSIZE+1];
+	char name[BUFSIZE];
 	Node *n = NULL;
 
 	switch (scanner.token) {
@@ -488,7 +488,7 @@ static Node *function_declaration(void)
 {
 	bool temp;
 	Node *stmnt;
-	char name[BUFSIZE+1];
+	char name[BUFSIZE];
 	Array *arguments = array_alloc();
 
 	snprintf(name, sizeof(name), "%s", scanner.string);
@@ -532,7 +532,7 @@ static Node *function_declaration(void)
  */
 static Node *variable_declaration(variabletype_t vt)
 {
-	char name[BUFSIZE+1];
+	char name[BUFSIZE];
 	Node *n, *defvar;
 
 	n = create(VARIABLE_DECLARATION);
@@ -635,7 +635,7 @@ static Node *do_stmnt(void)
  */
 static Node *for_stmnt(void)
 {
-	char targetname[BUFSIZE+1];
+	char targetname[BUFSIZE];
 	Node *stmnt;
 
 	if (scanner.token == IDENTIFIER)

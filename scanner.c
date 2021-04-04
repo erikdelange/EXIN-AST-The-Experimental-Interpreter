@@ -153,7 +153,7 @@ static void scanner_load(struct scanner *sc)
 static token_t next_token(void)
 {
 	if (scanner.peeked == 0)
-		scanner.token = read_next_token(scanner.string, BUFSIZE);
+		scanner.token = read_next_token(scanner.string, sizeof(scanner.string));
 	else {
 		scanner.token = scanner.peeked;
 		scanner.peeked = 0;
@@ -176,7 +176,7 @@ static token_t next_token(void)
 static token_t peek_token(void)
 {
 	if (scanner.peeked == 0)
-		scanner.peeked = read_next_token(scanner.string, BUFSIZE);
+		scanner.peeked = read_next_token(scanner.string, sizeof(scanner.string));
 
 	return scanner.peeked;
 }
@@ -194,8 +194,13 @@ static token_t peek_token(void)
  */
 static token_t read_string(char *string, int bufsize)
 {
+	assert(string != NULL);
+	assert(bufsize >= 2);  /* at least space for 1 character plus closing '\0' */
+
 	char ch;
 	int count = 0;
+
+	bufsize -= 1;  /* reserve space for '\0' */
 
 	while (1) {
 		ch = nextch();
@@ -237,10 +242,15 @@ static token_t read_string(char *string, int bufsize)
  */
 static token_t read_number(char *number, int bufsize)
 {
+	assert(number != NULL);
+	assert(bufsize >= 2);  /* at least space for 1 character plus closing '\0' */
+
 	char ch;
 	int dot = 0;
 	int exp = 0;
 	int count = 0;
+
+	bufsize -= 1;  /* reserve space for '\0' */
 
 	while (1) {
 		ch = nextch();
@@ -295,8 +305,13 @@ static token_t read_number(char *number, int bufsize)
  */
 static token_t read_identifier(char *name, int bufsize)
 {
+	assert(name != NULL);
+	assert(bufsize >= 2);  /* at least space for 1 character plus closing '\0' */
+
 	char ch;
 	int count = 0, l, h, m = 0, d = 0;
+
+	bufsize -= 1;  /* reserve space for '\0' */
 
 	while (1) {
 		ch = nextch();
@@ -343,6 +358,9 @@ static token_t read_identifier(char *name, int bufsize)
  */
 static token_t read_character(char *c, int bufsize)
 {
+	assert(c != NULL);
+	assert(bufsize >= 2);  /* at least space for 1 character plus closing '\0' */
+
 	UNUSED(bufsize);  /* bufsize unused, size of c[] assumed to be at least 2 */
 
 	char ch;
@@ -396,10 +414,10 @@ static token_t read_character(char *c, int bufsize)
  */
 static token_t read_next_token(char *buffer, int bufsize)
 {
-	char ch;
-
 	assert(buffer != NULL);
 	assert(bufsize >= 2);  /* at least space for 1 character plus closing '\0' */
+
+	char ch;
 
 	buffer[0] = 0;
 
@@ -429,7 +447,7 @@ static token_t read_next_token(char *buffer, int bufsize)
 			while (ch != '\n' && ch != EOF)
 				ch = nextch();
 		if (ch == '\r')
-			ch = nextch();  /* handle linux style line ending */
+			ch = nextch();  /* handle CR/LF style line ending */
 		if (ch == '\n') {
 			scanner.at_bol = true;
 			continue;
@@ -470,7 +488,7 @@ static token_t read_next_token(char *buffer, int bufsize)
 
 	/* check for end of line or end of file */
 	if (ch == '\r')
-		ch = nextch();  /* handle linux style line endings */
+		ch = nextch();  /* handle CR/LF line endings */
 	if (ch == '\n') {
 		scanner.at_bol = true;
 		return NEWLINE;
