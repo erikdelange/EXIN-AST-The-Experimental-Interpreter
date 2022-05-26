@@ -82,26 +82,26 @@ static int load(Module *self, const char *name)
  */
 static Module *import(const char *name)
 {
-	Module *m;
+	Module *m = NULL;
 
 	assert(name != NULL);
 	assert(*name != '\0');
 
 	if ((m = calloc(1, sizeof(Module))) == NULL)
 		raise(OutOfMemoryError);
+	else {
+		*m = module;
 
-	*m = module;
+		if (load(m, name) == 0)
+			raise(SystemError, "error importing %s: %s (%d)", name, \
+								strerror(errno), errno);
 
-	if (load(m, name) == 0)
-		raise(SystemError, "error importing %s: %s (%d)", name, \
-							strerror(errno), errno);
+		if ((m->name = strdup(name)) == NULL)
+			raise(OutOfMemoryError);
 
-	if ((m->name = strdup(name)) == NULL)
-		raise(OutOfMemoryError);
-
-	m->next = modulehead;
-	modulehead = m;
-
+		m->next = modulehead;
+		modulehead = m;
+	}
 	return m;
 }
 

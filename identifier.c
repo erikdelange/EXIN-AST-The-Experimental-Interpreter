@@ -95,17 +95,18 @@ static Identifier *addIdentifier(identifiertype_t type, Scope *level, const char
 	if ((searchIdentifierInScope(level, name)) == NULL) {
 		if ((id = calloc(1, sizeof(Identifier))) == NULL)
 			raise(OutOfMemoryError);
+		else {
+			*id = identifier;
 
-		*id = identifier;
+			if ((id->name = strdup(name)) == NULL)
+				raise(OutOfMemoryError);
 
-		if ((id->name = strdup(name)) == NULL)
-			raise(OutOfMemoryError);
-
-		id->type = type;
-		id->node = NULL;
-		id->object = NULL;
-		id->next = level->first;
-		level->first = id;
+			id->type = type;
+			id->node = NULL;
+			id->object = NULL;
+			id->next = level->first;
+			level->first = id;
+		}
 	}
 	return id;
 }
@@ -195,14 +196,15 @@ static void appendScopeLevel(bool nested)
 
 	if ((level = calloc(1, sizeof(Scope))) == NULL)
 		raise(OutOfMemoryError);
+	else {
+		*level = scope;
 
-	*level = scope;
+		level->parent = local;
+		level->first = NULL;
+		level->nested = nested;
 
-	level->parent = local;
-	level->first = NULL;
-	level->nested = nested;
-
-	local = level;
+		local = level;
+	}
 }
 
 
