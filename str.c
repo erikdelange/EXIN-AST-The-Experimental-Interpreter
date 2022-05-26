@@ -92,7 +92,7 @@ static Object *str_method(StrObject *obj, char *name, Array *arguments)
 
 	if (strcmp("len", name) == 0) {
 		if (arguments->size != 0) {
-			raise(SyntaxError, "method %s takes %d arguments", name, 2);
+			raise(SyntaxError, "method %s takes %d arguments", name, 0);
 			result = obj_alloc(NONE_T);
 		} else
 			result = strtype.length(obj);

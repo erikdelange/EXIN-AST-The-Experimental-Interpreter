@@ -18,6 +18,7 @@
 #include "function.h"
 #include "scanner.h"
 #include "object.h"
+#include "array.h"
 #include "error.h"
 #include "visit.h"
 #include "list.h"
@@ -110,9 +111,23 @@ void visit(Node *n, Stack *s)
 	n->visit(n, s);
 
 	if (n->method.valid) {
-		Object *obj = pop(s);
-		push(s, obj_method(isListNode(obj) ? obj_from_listnode(obj) : obj, n->method.name, n->method.arguments));
+		Array *arguments = array.alloc();
+		Object *obj = stack.pop(s);
+
+		/* visit all arguments and put resulting object in array arguments */
+		for (size_t i = 0; i < n->method.arguments->size; i++) {
+			visit(n->method.arguments->element[i], s);
+			array.append_child(arguments, stack.pop(s));
+		}
+
+		stack.push(s, obj_method(isListNode(obj) ? obj_from_listnode(obj) : obj, n->method.name, arguments));
+
+		for (size_t i = 0; i < n->method.arguments->size; i++)
+			obj_decref(arguments->element[i]);
+
 		obj_decref(obj);
+
+		array.free(arguments);
 	}
 
 	current_node = tmp;
@@ -196,16 +211,16 @@ void visit_literal(Node *n, Stack *s)
 {
 	switch (n->literal.type) {
 		case VT_CHAR:
-			push(s, obj_create(CHAR_T, str_to_char(n->literal.value)));
+			stack.push(s, obj_create(CHAR_T, str_to_char(n->literal.value)));
 			break;
 		case VT_INT:
-			push(s, obj_create(INT_T, str_to_int(n->literal.value)));
+			stack.push(s, obj_create(INT_T, str_to_int(n->literal.value)));
 			break;
 		case VT_FLOAT:
-			push(s, obj_create(FLOAT_T, str_to_float(n->literal.value)));
+			stack.push(s, obj_create(FLOAT_T, str_to_float(n->literal.value)));
 			break;
 		case VT_STR:
-			push(s, obj_create(STR_T, n->literal.value));
+			stack.push(s, obj_create(STR_T, n->literal.value));
 			break;
 		default:
 			break;
@@ -245,13 +260,13 @@ void visit_unary(Node *n, Stack *s)
 
 	switch (n->unary.operator) {
 		case UNOT:
-			obj = pop(s);
-			push(s, obj_negate(obj));
+			obj = stack.pop(s);
+			stack.push(s, obj_negate(obj));
 			obj_decref(obj);
 			break;
 		case UMINUS:
-			obj = pop(s);
-			push(s, obj_invert(obj));
+			obj = stack.pop(s);
+			stack.push(s, obj_invert(obj));
 			obj_decref(obj);
 			break;
 		case UPLUS:
@@ -302,53 +317,53 @@ void visit_binary(Node *n, Stack *s)
 	Object *left, *right;
 
 	visit(n->binary.left, s);
-	left = pop(s);
+	left = stack.pop(s);
 
 	visit(n->binary.right, s);
-	right = pop(s);
+	right = stack.pop(s);
 
 	switch (n->binary.operator) {
 		case ADD:
-			push(s, obj_add(left, right));
+			stack.push(s, obj_add(left, right));
 			break;
 		case SUB:
-			push(s, obj_sub(left, right));
+			stack.push(s, obj_sub(left, right));
 			break;
 		case MUL:
-			push(s, obj_mult(left, right));
+			stack.push(s, obj_mult(left, right));
 			break;
 		case DIV:
-			push(s, obj_divs(left, right));
+			stack.push(s, obj_divs(left, right));
 			break;
 		case MOD:
-			push(s, obj_mod(left, right));
+			stack.push(s, obj_mod(left, right));
 			break;
 		case LSS:
-			push(s, obj_lss(left, right));
+			stack.push(s, obj_lss(left, right));
 			break;
 		case LEQ:
-			push(s, obj_leq(left, right));
+			stack.push(s, obj_leq(left, right));
 			break;
 		case GTR:
-			push(s, obj_gtr(left, right));
+			stack.push(s, obj_gtr(left, right));
 			break;
 		case GEQ:
-			push(s, obj_geq(left, right));
+			stack.push(s, obj_geq(left, right));
 			break;
 		case EQ:
-			push(s, obj_eql(left, right));
+			stack.push(s, obj_eql(left, right));
 			break;
 		case NEQ:
-			push(s, obj_neq(left, right));
+			stack.push(s, obj_neq(left, right));
 			break;
 		case OP_IN:
-			push(s, obj_in(left, right));
+			stack.push(s, obj_in(left, right));
 			break;
 		case LOGICAL_AND:
-			push(s, obj_and(left, right));
+			stack.push(s, obj_and(left, right));
 			break;
 		case LOGICAL_OR:
-			push(s, obj_or(left, right));
+			stack.push(s, obj_or(left, right));
 			break;
 	}
 
@@ -378,7 +393,7 @@ void visit_comma_expr(Node *n, Stack *s)
 		if (i == n->comma_expr.expressions->size - 1)
 			break;  /* last expression reached */
 		else
-			obj_decref(pop(s));  /* only result from last expression is used */
+			obj_decref(stack.pop(s));  /* only result from last expression is used */
 	}
 }
 
@@ -405,12 +420,12 @@ void visit_arglist(Node *n, Stack *s)
 
 	for (size_t i = 0; i != n->arglist.arguments->size; i++) {
 		visit(n->arglist.arguments->element[i], s);
-		arg = pop(s);
+		arg = stack.pop(s);
 		listtype.append((ListObject *)obj, obj_copy(arg));
 		obj_decref(arg);
 	}
 
-	push(s, obj);
+	stack.push(s, obj);
 }
 
 
@@ -433,17 +448,17 @@ void visit_index(Node *n, Stack *s)
 	Object *obj, *sequence, *index;
 
 	visit(n->index.sequence, s);
-	sequence = pop(s);
+	sequence = stack.pop(s);
 
 	visit(n->index.index, s);
-	index = pop(s);
+	index = stack.pop(s);
 
 	obj = obj_item(sequence, obj_as_int(index));
 
 	obj_decref(index);
 	obj_decref(sequence);
 
-	push(s, obj);
+	stack.push(s, obj);
 }
 
 
@@ -468,13 +483,13 @@ void visit_slice(Node *n, Stack *s)
 	Object *obj, *sequence, *start, *end;
 
 	visit(n->slice.sequence, s);
-	sequence = pop(s);
+	sequence = stack.pop(s);
 
 	visit(n->slice.start, s);
-	start = pop(s);
+	start = stack.pop(s);
 
 	visit(n->slice.end, s);
-	end = pop(s);
+	end = stack.pop(s);
 
 	obj = obj_slice(sequence, obj_as_int(start), obj_as_int(end));
 
@@ -482,7 +497,7 @@ void visit_slice(Node *n, Stack *s)
 	obj_decref(start);
 	obj_decref(sequence);
 
-	push(s, obj);
+	stack.push(s, obj);
 }
 
 
@@ -520,10 +535,10 @@ void visit_assignment(Node *n, Stack *s)
 	Object *target, *value, *tmp;
 
 	visit(n->assignment.variable, s);
-	target = pop(s);
+	target = stack.pop(s);
 
 	visit(n->assignment.expression, s);
-	value = pop(s);
+	value = stack.pop(s);
 
 	switch (n->assignment.operator) {
 		case ASSIGN:
@@ -552,7 +567,7 @@ void visit_assignment(Node *n, Stack *s)
 	obj_decref(tmp);
 	obj_decref(value);
 
-	push(s, target);
+	stack.push(s, target);
 }
 
 
@@ -581,7 +596,7 @@ void visit_reference(Node *n, Stack *s)
 	id = identifier.search(n->reference.name);
 
 	obj_incref(id->object);
-	push(s, id->object);
+	stack.push(s, id->object);
 }
 
 
@@ -635,12 +650,12 @@ void visit_function_call(Node *n, Stack *s)
 {
 	Node *fdecl;
 	Identifier *id;
-	Array *args = array_alloc();
+	Array *args = array.alloc();
 
 	/* place the actual arguments objects in an array */
 	for (size_t i = 0; i != n->function_call.arguments->size; i++) {
 		visit(n->function_call.arguments->element[i], s);
-		array_append_child(args, pop(s));
+		array.append_child(args, stack.pop(s));
 	}
 
 	if (n->function_call.builtin == true)
@@ -662,12 +677,12 @@ void visit_function_call(Node *n, Stack *s)
 		scope.remove_level();
 
 		if (do_return == 0)
-			push(s, obj_create(INT_T, 0));  /* result if the function did not end with a RETURN statement */
+			stack.push(s, obj_create(INT_T, 0));  /* result if the function did not end with a RETURN statement */
 
 		do_return = 0;
 	}
 
-	array_free(args);
+	array.free(args);
 }
 
 
@@ -689,7 +704,7 @@ void visit_expression_stmnt(Node *n, Stack *s)
 
 	visit(n->expression_stmnt.expression, s);
 
-	obj = pop(s);
+	obj = stack.pop(s);
 	obj_decref(obj);  /* expression statements do not have a result */
 }
 
@@ -821,7 +836,7 @@ void visit_defvar(Node *n, Stack *s)
 
 	if (n->defvar.initialvalue) {
 		visit(n->defvar.initialvalue, s);
-		obj = pop(s);
+		obj = stack.pop(s);
 		obj_assign(id->object, obj);
 		obj_decref(obj);
 	}
@@ -853,7 +868,7 @@ void visit_if_stmnt(Node *n, Stack *s)
 	Object *obj;
 
 	visit(n->if_stmnt.condition, s);
-	obj = pop(s);
+	obj = stack.pop(s);
 
 	if (obj_as_bool(obj) == true)
 		visit(n->if_stmnt.consequent, s);
@@ -887,7 +902,7 @@ void visit_while_stmnt(Node *n, Stack *s)
 
 	while (1) {
 		visit(n->loop_stmnt.condition, s);
-		obj = pop(s);
+		obj = stack.pop(s);
 		condition = obj_as_bool(obj);
 		obj_decref(obj);
 
@@ -929,7 +944,7 @@ void visit_do_stmnt(Node *n, Stack *s)
 		do_continue = 0;
 
 		visit(n->loop_stmnt.condition, s);
-		obj = pop(s);
+		obj = stack.pop(s);
 		condition = obj_as_bool(obj);
 		obj_decref(obj);
 
@@ -973,7 +988,7 @@ void visit_for_stmnt(Node *n, Stack *s)
 
 	visit(n->for_stmnt.expression, s);
 
-	seq = pop(s);
+	seq = stack.pop(s);
 	len = obj_length(seq);
 
 	do_break = do_continue = 0;
@@ -1020,7 +1035,7 @@ void visit_print_stmnt(Node *n, Stack *s)
 
 		visit(n->print_stmnt.expressions->element[i], s);
 
-		obj = pop(s);
+		obj = stack.pop(s);
 
 		#ifdef VT100
 		debug_printf(~NODEBUG, "%c[032m", 27);  /* VT100 green foreground */
@@ -1057,7 +1072,7 @@ void check_return_stmnt(Node *n)
 void visit_return_stmnt(Node *n, Stack *s)
 {
 	if (n->return_stmnt.value == NULL)
-		push(s, obj_create(INT_T, 0));
+		stack.push(s, obj_create(INT_T, 0));
 	else
 		visit(n->return_stmnt.value, s);
 

@@ -12,7 +12,6 @@
 
 #include "object.h"
 #include "error.h"
-#include "visit.h"
 #include "none.h"
 #include "list.h"
 
@@ -117,13 +116,10 @@ static void list_vset(ListObject *obj, va_list argp)
 static Object *list_method(ListObject *obj, char *name, Array *arguments)
 {
 	Object *result;
-	Stack *s;
-
-	s = stack_alloc(10);
 
 	if (strcmp("len", name) == 0) {
 		if (arguments->size != 0) {
-			raise(SyntaxError, "method %s takes %d arguments", name, 2);
+			raise(SyntaxError, "method %s takes %d arguments", name, 0);
 			result = obj_alloc(NONE_T);
 		} else
 			result = listtype.length(obj);
@@ -131,28 +127,19 @@ static Object *list_method(ListObject *obj, char *name, Array *arguments)
 		if (arguments->size != 2)
 			raise(SyntaxError, "method %s takes %d arguments", name, 2);
 		else {
-			visit(arguments->element[0], s);
-			Object *index = pop(s);
-
-			visit(arguments->element[1], s);
-			Object *value = pop(s);
+			Object *index = arguments->element[0];
+			Object *value = arguments->element[1];
 
 			listtype.insert(obj, obj_as_int(index), obj_copy(value));
-
-			obj_decref(value);
-			obj_decref(index);
 		}
 		result = obj_alloc(NONE_T);
 	} else if (strcmp("append", name) == 0) {
 		if (arguments->size != 1)
 			raise(SyntaxError, "method %s takes %d argument", name, 1);
 		else {
-			visit(arguments->element[0], s);
-			Object *value = pop(s);
+			Object *value = arguments->element[0];
 
 			listtype.append(obj, obj_copy(value));
-
-			obj_decref(value);
 		}
 		result = obj_alloc(NONE_T);
 	} else if (strcmp("remove", name) == 0) {
@@ -160,19 +147,14 @@ static Object *list_method(ListObject *obj, char *name, Array *arguments)
 			raise(SyntaxError, "method %s takes %d argument", name, 1);
 			result = obj_alloc(NONE_T);
 		} else {
-			visit(arguments->element[0], s);
-			Object *index = pop(s);
+			Object *index = arguments->element[0];
 
 			result = listtype.remove(obj, obj_as_int(index));
-
-			obj_decref(index);
 		}
 	} else {
 		raise(SyntaxError, "objecttype %s has no method %s", TYPENAME(obj), name);
 		result = obj_alloc(NONE_T);
 	}
-
-	stack_free(s);
 
 	return result;
 }
