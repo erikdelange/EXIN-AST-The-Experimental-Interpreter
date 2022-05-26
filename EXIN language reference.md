@@ -422,7 +422,7 @@ list_literal ::= '[' ( assignment_expr ( ',' assignment_expr )* )? ']'
 
 string ::= '"' character* '"'
 
-character ::= 'any character except single quote' | escape
+character ::= "'" (any printable ASCII character except single quote' | escape) "'" 
 
 alphabetic ::= [a-zA-Z]
 

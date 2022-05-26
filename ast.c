@@ -39,7 +39,7 @@ static void create_block(Node *n)
 	n->visit = visit_block;
 	n->print = print_block;
 
-	n->block.statements = array_alloc();
+	n->block.statements = array.alloc();
 }
 
 
@@ -99,7 +99,7 @@ static void create_comma_expr(Node *n)
 	n->visit = visit_comma_expr;
 	n->print = print_comma_expr;
 
-	n->comma_expr.expressions = array_alloc();
+	n->comma_expr.expressions = array.alloc();
 }
 
 
@@ -113,7 +113,7 @@ static void create_arglist(Node *n)
 	n->print = print_arglist;
 	n->visit = visit_arglist;
 
-	n->arglist.arguments = array_alloc();
+	n->arglist.arguments = array.alloc();
 }
 
 
@@ -189,7 +189,7 @@ static void create_function_call(Node *n, va_list argp)
 	n->print = print_function_call;
 
 	n->function_call.name = strdup(va_arg(argp, char *));
-	n->function_call.arguments = array_alloc();
+	n->function_call.arguments = array.alloc();
 	n->function_call.builtin = va_arg(argp, int);  /* bool is promoted to int */
 	n->function_call.checked = false;
 }
@@ -235,7 +235,7 @@ static void create_variable_declaration(Node *n)
 	n->visit = visit_variable_declaration;
 	n->print = print_variable_declaration;
 
-	n->variable_declaration.defvars = array_alloc();
+	n->variable_declaration.defvars = array.alloc();
 }
 
 
@@ -332,7 +332,7 @@ static void create_print_stmnt(Node *n, va_list argp)
 	n->print = print_print_stmnt;
 
 	n->print_stmnt.raw = va_arg(argp, int);
-	n->print_stmnt.expressions = array_alloc();
+	n->print_stmnt.expressions = array.alloc();
 }
 
 
@@ -375,8 +375,8 @@ static void create_input_stmnt(Node *n)
 	n->visit = visit_input_stmnt;
 	n->print = print_input_stmnt;
 
-	n->input_stmnt.prompts = array_alloc();
-	n->input_stmnt.identifiers = array_alloc();
+	n->input_stmnt.prompts = array.alloc();
+	n->input_stmnt.identifiers = array.alloc();
 }
 
 

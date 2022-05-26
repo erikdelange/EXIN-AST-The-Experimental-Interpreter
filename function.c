@@ -31,7 +31,7 @@ static void type(Array *arguments, Stack *s)
 
 	obj_decref(obj);
 
-	push(s, result);
+	stack.push(s, result);
 }
 
 
@@ -50,7 +50,7 @@ static void chr(Array *arguments, Stack *s)
 
 	obj_decref(obj);
 
-	push(s, result);
+	stack.push(s, result);
 }
 
 
@@ -69,7 +69,7 @@ static void ord(Array *arguments, Stack *s)
 
 	obj_decref(obj);
 
-	push(s, result);
+	stack.push(s, result);
 }
 
 

@@ -144,7 +144,7 @@ typedef struct node {
 		struct array *arguments;
 	} method;
 
-	union {  /* which struct to use depends on nodetype_t t */
+	union {  /* which struct to use depends on type */
 		struct {
 			struct array *statements;
 		} block;

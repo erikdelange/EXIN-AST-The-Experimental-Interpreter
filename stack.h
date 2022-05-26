@@ -10,24 +10,21 @@
 #include <stdbool.h>
 
 #define STACKINCREMENT 10	/* number of elements to add when the stack needs to grow */
-#define STACKDECREMENT 100	/* when stack has this many unused elements it will shrink */
-
-#if (STACKDECREMENT / STACKINCREMENT) < 10
-#error "STACKDECREMENT must be at least 10 times as big as STACKINCREMENT"
-#endif
+#define STACKDECREMENT 10	/* when stack has this many unused elements it will shrink */
 
 typedef struct stack {
 	long top;				/* zero-based index of the item on top of the stack */
 	long capacity;			/* size of the stack as number of elements */
 	void **array;			/* pointer to an array of pointers holding the values */
+
+	struct stack *(*alloc)(long);
+	void (*free)(struct stack *);
+	void (*push)(struct stack *, void *);
+	void *(*pop)(struct stack *);
+	void *(*peek)(struct stack *);
+	bool (*is_empty)(struct stack *);
 } Stack;
 
-extern struct stack *stack_alloc(long capacity);
-extern void stack_free(Stack *s);
-
-extern void push(Stack *s, void *item);
-extern void *pop(Stack *s);
-extern void *peek(Stack *s);
-extern bool is_empty(Stack *s);
+extern Stack stack;
 
 #endif

@@ -126,13 +126,13 @@ static Node *trailer(Node *n)
 
 			n->method.valid = true;
 			n->method.name = strdup(scanner.string);
-			n->method.arguments = array_alloc();
+			n->method.arguments = array.alloc();
 
 			expect(IDENTIFIER);
 			expect(LPAR);
 			while (accept(RPAR) == 0) {
 				while (1) {
-					array_append_child(n->method.arguments, logical_or_expr());
+					array.append_child(n->method.arguments, logical_or_expr());
 					if (scanner.token == RPAR)
 						break;
 					expect(COMMA);
@@ -178,7 +178,7 @@ static Node *primary_expr(void)
 			expect(LSQB);
 			while (accept(RSQB) == 0) {
 				while (1) {
-					array_append_child(n->arglist.arguments, assignment_expr());
+					array.append_child(n->arglist.arguments, assignment_expr());
 					if (scanner.token == RSQB)
 						break;
 					expect(COMMA);
@@ -192,7 +192,7 @@ static Node *primary_expr(void)
 				n = create(FUNCTION_CALL, name, is_builtin(name));
 				while (accept(RPAR) == 0) {
 					while (1) {
-						array_append_child(n->function_call.arguments, assignment_expr());
+						array.append_child(n->function_call.arguments, assignment_expr());
 						if (scanner.token == RPAR)
 							break;
 						expect(COMMA);
@@ -429,11 +429,11 @@ static Node *comma_expr(void)
 
 	if (scanner.token == COMMA) {  /* only create a comma expression if there actually is a comma */
 		c = create(COMMA_EXPR);
-		array_append_child(c->comma_expr.expressions, n);
+		array.append_child(c->comma_expr.expressions, n);
 
 		while (1) {
 			if (accept(COMMA))
-				array_append_child(c->comma_expr.expressions, assignment_expr());
+				array.append_child(c->comma_expr.expressions, assignment_expr());
 			else
 				break;
 		}
@@ -489,7 +489,7 @@ static Node *function_declaration(void)
 	bool temp;
 	Node *stmnt;
 	char name[BUFSIZE];
-	Array *arguments = array_alloc();
+	Array *arguments = array.alloc();
 
 	snprintf(name, sizeof(name), "%s", scanner.string);
 
@@ -501,7 +501,7 @@ static Node *function_declaration(void)
 			if (scanner.token != IDENTIFIER)
 				raise(SyntaxError, "expected identifier instead of %s", \
 									tokenName(scanner.token));
-			array_append_child(arguments, strdup(scanner.string));
+			array.append_child(arguments, strdup(scanner.string));
 			expect(IDENTIFIER);
 			if (scanner.token == RPAR)
 				break;
@@ -551,7 +551,7 @@ static Node *variable_declaration(variabletype_t vt)
 		else
 			defvar = create(DEF_VAR, vt, name, NULL);
 
-		array_append_child(n->variable_declaration.defvars, defvar);
+		array.append_child(n->variable_declaration.defvars, defvar);
 
 		if (accept(NEWLINE))
 			break;
@@ -678,7 +678,7 @@ static Node *print_stmnt(void)
 
 	while (accept(NEWLINE) == 0)
 		while (1) {
-			array_append_child(n->print_stmnt.expressions, assignment_expr());
+			array.append_child(n->print_stmnt.expressions, assignment_expr());
 			if (scanner.token == NEWLINE)
 				break;
 			expect(COMMA);
@@ -725,13 +725,13 @@ static Node *input_stmnt(void)
 
 	do {
 		if (scanner.token == STR) {
-			array_append_child(n->input_stmnt.prompts, strdup(scanner.string));
+			array.append_child(n->input_stmnt.prompts, strdup(scanner.string));
 			scanner.next();
 		} else
-			array_append_child(n->input_stmnt.prompts, NULL);  /* no prompt */
+			array.append_child(n->input_stmnt.prompts, NULL);  /* no prompt */
 
 		if (scanner.token == IDENTIFIER)
-			array_append_child(n->input_stmnt.identifiers, strdup(scanner.string));
+			array.append_child(n->input_stmnt.identifiers, strdup(scanner.string));
 		accept(IDENTIFIER);
 	} while (accept(COMMA));
 
@@ -878,7 +878,7 @@ static Node *block(void)
 
 	while (1) {
 		if ((stmnt = statement()))
-			array_append_child(n->block.statements, stmnt);
+			array.append_child(n->block.statements, stmnt);
 		if (scanner.token == DEDENT || scanner.token == ENDMARKER)
 			break;
 	}

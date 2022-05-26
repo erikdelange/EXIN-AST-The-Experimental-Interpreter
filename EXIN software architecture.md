@@ -6,7 +6,7 @@ The interpreter implements the language grammar as described in [EXIN EBNF Synta
 When starting the interpreter with the -h argument - and if it has been compiled with the DEBUG macro (-D DEBUG) - the following message is printed.
 ```
 > .\exin -h
-EXIN version 2.00
+EXIN version 2.05
 usage: exin-ast.exe [options] module
 module: name of file containing code to execute
 options
@@ -40,7 +40,7 @@ Using an AST with a visitor pattern also has a disadvantage; implementing statem
 New functions can be added easily to the language by creating them in function.c. Adding new language constructs - for example an *elif* statement in *if .. then .. else ..* is a bit more complex and requires changes in ast.h, ast.c, parse.c and visit.c.
 
 ###### Testing
-An interpreter still is a complex piece of software and an error is easily made. To catch these I've created hundreds of test scripts in the language. After every change to the interpreter all scripts are executed, and their actual output is compared with the expected output. In this way bugs are caught quickly. If the tests missed something I just add a new script. I've created a separate piece of software (in Python, see [here](https://github.com/erikdelange/EXIN-Test-Suite-Management)) to record and execute all the tests.
+An interpreter still is a complex piece of software and an error is easily made. To catch these I've created hundreds of test scripts in the language. After every change to the interpreter all scripts are executed, and their actual output is compared with the expected output. In this way bugs are easily caught. If the tests missed something I just add a new script. I've created a separate piece of software (in Python, see [here](https://github.com/erikdelange/EXIN-Test-Suite-Management)) to record and execute all the tests.
 
 ###### Efficiency
 Using an AST make the interpreter fairly efficient as source code only needs to be read and decoded once. Only the retrieval of identifiers could be done more efficient as they are stored as strings. This means variable names are searched in the identifier lists every time. Some interpreters first translate names in shorter (e.g. one- or two-byte) versions before starting interpretation to speeds up things. However the aim for this interpreter was simplicity and not speed.

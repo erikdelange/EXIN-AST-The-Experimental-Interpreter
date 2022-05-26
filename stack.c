@@ -34,7 +34,7 @@ static bool is_full(Stack *stack)
  * A stack is empty when top is equal to -1.
  *
  */
-bool is_empty(Stack *stack)
+static bool is_empty(Stack *stack)
 {
 	assert(stack != NULL);
 
@@ -42,7 +42,7 @@ bool is_empty(Stack *stack)
 }
 
 
-/* Add an item to the stack. Increase top by 1.
+/* Add an item to the top of the stack. Increase top by 1.
  *
  */
 void push(Stack *stack, void *item)
@@ -139,3 +139,19 @@ void stack_free(Stack *stack)
 
 	free(stack);
 }
+
+
+/* Stack API
+ *
+ */
+Stack stack = {
+	.top = -1,
+	.capacity = 0L,
+	.array = NULL,
+	.alloc = stack_alloc,
+	.free = stack_free,
+	.push = push,
+	.pop = pop,
+	.peek = peek,
+	.is_empty = is_empty
+};

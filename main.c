@@ -102,8 +102,8 @@ int	main(int argc, char **argv)
 		fprintf(stderr, "%s: module name missing\n", executable);
 		usage(executable, stderr);
 	} else if (argc == 1) {
-		Stack *s = stack_alloc(10);
-		int r = 0;
+		Stack *s = stack.alloc(10);
+		int returncode = 0;
 
 		Node *root = parse(module.import(*argv));  /* step 1: parse module(s) */
 
@@ -112,7 +112,7 @@ int	main(int argc, char **argv)
 
 		Config tmp;
 		tmp.debug = config.debug;
-		config.debug = 0;  /* no debug output when checking */
+		config.debug = NODEBUG;  /* no debug output when checking */
 
 		check(root);  /* step 2: do code checks */
 		scope.remove_level();
@@ -121,10 +121,10 @@ int	main(int argc, char **argv)
 
 		visit(root, s);  /* step 3: visit = execute the AST */
 
-		if (!is_empty(s)) {  /* check for return value */
-			Object *obj = pop(s);
+		if (!stack.is_empty(s)) {  /* check for return value */
+			Object *obj = stack.pop(s);
 			if (isNumber(obj))
-				r = obj_as_int(obj);
+				returncode = obj_as_int(obj);
 			obj_decref(obj);
 		}
 
@@ -132,8 +132,8 @@ int	main(int argc, char **argv)
 		if (config.debug & (DEBUGDUMP | DEBUGDUMPFILE)) {
 			printf("\nstack content = %ld value(s)\n", s->top + 1);
 
-			while (is_empty(s) == false)
-				obj_print(stdout, pop(s));
+			while (stack.is_empty(s) == false)
+				obj_print(stdout, stack.pop(s));
 		}
 
 		if (config.debug & DEBUGDUMP) {
@@ -147,7 +147,7 @@ int	main(int argc, char **argv)
 		}
 		#endif  /* DEBUG */
 
-		return r;
+		return returncode;
 	} else {  /* more than 1 argument */
 		fprintf(stderr, "%s: to many modules\n", executable);
 		usage(executable, stderr);
