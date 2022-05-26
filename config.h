@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 #define LANGUAGE	"EXIN"
-#define VERSION		"2.04"
+#define VERSION		"2.05"
 #define TABSIZE		4		/* default spaces per tab */
 
 /* Constants which are used to define the size of
@@ -22,7 +22,7 @@
 #define MAXINDENT	132		/* maximum number of indents */
 
 #if BUFSIZE < 9
-#error "BUFSIZE must be 1 bigger than the longest keyword (= continue)"
+#error "BUFSIZE must at least be 1 greater than the longest keyword (= continue)"
 #endif
 
 /* C representation of EXIN's basic variable types
